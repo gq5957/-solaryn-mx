@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solaryn MX — Arquitectura de Inteligencia Operativa</title>
+    <meta name="description" content="Arquitectura de Inteligencia Operativa para empresas mexicanas que quieren competir con sistemas, no solo con personas." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+    <style>
+      /* ── MX-specific extensions ── */
+      :root {
+        --green-accent: #00C878;
+      }
+
+      .mx-hero-bg {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: radial-gradient(800px 500px at 90% 30%, rgba(0,200,120,.07), transparent 65%);
+        z-index: 0;
+      }
+
+      .hero { position: relative; padding: 80px 0 60px; }
+      .hero .container { position: relative; z-index: 1; }
+
+      .kicker-mx {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .kicker-mx .divider-mx {
+        height: 1px;
+        width: 24px;
+        background: var(--green-accent);
+        opacity: .6;
+        flex-shrink: 0;
+      }
+
+      .lang-toggle {
+        display: inline-flex;
+        border: 1px solid rgba(255,255,255,.12);
+        border-radius: 6px;
+        overflow: hidden;
+        font-size: 12px;
+      }
+      .lang-toggle a {
+        padding: 5px 10px;
+        color: var(--muted);
+        background: transparent;
+        transition: background .15s, color .15s;
+      }
+      .lang-toggle a.active {
+        background: rgba(255,255,255,.08);
+        color: var(--text);
+        font-weight: 600;
+      }
+      .lang-toggle a:hover:not(.active) { background: rgba(255,255,255,.04); }
+
+      .topbar-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        flex-wrap: wrap;
+        padding: 14px 0;
+      }
+
+      /* Override nav last-child arrow — not appropriate for MX nav */
+      .nav a:last-child::after { content: " →"; opacity: .6; }
+
+      .section-mx h2::before {
+        content: "";
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--green-accent);
+        margin-right: 10px;
+        vertical-align: middle;
+        opacity: .75;
+      }
+
+      /* Offer stack */
+      .offerGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-top: 14px;
+        counter-reset: offer;
+      }
+      @media (max-width: 940px) { .offerGrid { grid-template-columns: 1fr; } }
+
+      .offerCard {
+        border: 1px solid rgba(255,255,255,.08);
+        background: rgba(255,255,255,.03);
+        border-radius: var(--radius);
+        padding: 22px 18px 18px;
+        position: relative;
+        counter-increment: offer;
+      }
+      .offerCard::before {
+        content: "0" counter(offer);
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 11px;
+        color: var(--muted);
+        opacity: .5;
+        letter-spacing: .05em;
+      }
+      .offerCard h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; }
+      .offerCard p  { margin: 0 0 10px; color: var(--muted); font-size: 14px; }
+      .offerCard .deliverables {
+        margin: 10px 0 0;
+        padding-left: 0;
+        list-style: none;
+        font-size: 13px;
+        color: var(--muted);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .offerCard .deliverables li::before { content: "→ "; opacity: .5; }
+      .offerCard .pricing-tag {
+        display: inline-block;
+        margin-top: 14px;
+        font-size: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: var(--green-accent);
+        opacity: .75;
+        letter-spacing: .04em;
+      }
+
+      /* Stat bar */
+      .statBar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1px;
+        background: rgba(255,255,255,.06);
+        border-radius: var(--radius);
+        overflow: hidden;
+        margin-top: 32px;
+      }
+      @media (max-width: 700px) { .statBar { grid-template-columns: 1fr; } }
+      .statItem { padding: 22px 20px; background: rgba(255,255,255,.02); text-align: center; }
+      .statNum  { font-size: 32px; font-weight: 700; letter-spacing: -.03em; color: var(--text); display: block; }
+      .statLabel { font-size: 13px; color: var(--muted); margin-top: 4px; display: block; }
+
+      /* Pullquote */
+      .pullquote {
+        border-left: 2px solid var(--green-accent);
+        padding: 10px 0 10px 20px;
+        margin: 24px 0 0;
+        font-size: 17px;
+        line-height: 1.5;
+        color: var(--text);
+        opacity: .9;
+        font-style: italic;
+      }
+      .pullquote span { color: var(--muted); font-size: 13px; font-style: normal; display: block; margin-top: 6px; }
+
+      /* MX flag + pulsing dot */
+      .mx-flag {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: var(--green-accent);
+        opacity: .75;
+        letter-spacing: .06em;
+        text-transform: uppercase;
+      }
+      .mx-dot {
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--green-accent);
+        animation: pulse-mx 2.4s ease-in-out infinite;
+      }
+      @keyframes pulse-mx {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50%       { opacity: .4; transform: scale(.75); }
+      }
+
+      /* Fricciones */
+      .friccionGrid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-top: 14px;
+      }
+      @media (max-width: 700px) { .friccionGrid { grid-template-columns: 1fr; } }
+      .friccionCard {
+        border: 1px solid rgba(255,255,255,.07);
+        background: rgba(255,255,255,.02);
+        border-radius: var(--radius);
+        padding: 16px;
+      }
+      .friccionCard .icon { font-size: 18px; margin-bottom: 8px; display: block; }
+      .friccionCard h4 { margin: 0 0 5px; font-size: 14px; font-weight: 600; }
+      .friccionCard p  { margin: 0; font-size: 13px; color: var(--muted); }
+
+      /* Sector pills */
+      .sectorPills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+      .sectorPill {
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        border: 1px solid rgba(255,255,255,.1);
+        background: rgba(255,255,255,.03);
+        color: var(--muted);
+        font-family: 'IBM Plex Mono', monospace;
+        letter-spacing: .02em;
+      }
+
+      .mx-form-meta {
+        font-size: 12px;
+        font-family: 'IBM Plex Mono', monospace;
+        color: var(--muted);
+        opacity: .45;
+        margin-top: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="container">
+        <div class="topbar-inner">
+          <div class="brand">
+            <span class="mark" aria-hidden="true"></span>
+            <div>
+              <b>Solaryn MX</b><br />
+              <small>Arquitectura Operativa con IA</small>
+            </div>
+          </div>
+
+          <div class="mx-flag">
+            <span class="mx-dot"></span>
+            División México
+          </div>
+
+          <nav class="nav" aria-label="Navegación principal">
+            <a href="#problema">El Problema</a>
+            <a href="#ofertas">Servicios</a>
+            <a href="#metodologia">Metodología</a>
+            <a href="#diagnostico">Solicitar Diagnóstico</a>
+          </nav>
+
+          <div class="lang-toggle">
+            <a href="https://mx.solarynadvisory.com" class="active">ES</a>
+            <a href="https://solarynadvisory.com">EN</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero">
+        <div class="mx-hero-bg" aria-hidden="true"></div>
+        <div class="container">
+          <div class="kicker-mx">
+            <span class="kicker">Inteligencia Artificial · Arquitectura Operativa · Transformación Ejecutiva</span>
+            <span class="divider-mx"></span>
+          </div>
+
+          <h1 class="h1">
+            Tu competencia ya<br />opera con sistemas.<br />
+            <span style="color:var(--muted); font-weight:400;">¿Tu empresa también?</span>
+          </h1>
+
+          <p class="lede">
+            La mayoría de las empresas no tienen un problema de tecnología. Tienen un problema de <b>sistema</b>.
+            Rediseñamos cómo opera tu organización — integrando inteligencia artificial con gobernanza real,
+            cadencia ejecutiva y procesos que escalan sin perder el control.
+          </p>
+
+          <div class="pills" style="margin-top:22px;">
+            <a class="btn" href="#diagnostico">Solicitar Diagnóstico Estratégico</a>
+            <a class="btn" href="#ofertas" style="background:transparent; border-color:rgba(255,255,255,.10); color:var(--muted) !important;">Ver servicios</a>
+          </div>
+
+          <div class="statBar" aria-label="Indicadores">
+            <div class="statItem">
+              <span class="statNum">3</span>
+              <span class="statLabel">Fases de intervención claras</span>
+            </div>
+            <div class="statItem">
+              <span class="statNum">90</span>
+              <span class="statLabel">Días para resultados medibles</span>
+            </div>
+            <div class="statItem">
+              <span class="statNum">0</span>
+              <span class="statLabel">Promesas sin entregables</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="hair"></div>
+
+      <!-- El Problema -->
+      <section id="problema" class="section section-mx">
+        <div class="container">
+          <h2>El problema real</h2>
+          <p>La IA ya llegó a tu industria. El reto no es adoptarla — es hacerlo sin perder control operativo, coherencia estratégica ni la capacidad de escalar lo que funciona.</p>
+
+          <div class="friccionGrid">
+            <div class="friccionCard">
+              <span class="icon">⚙️</span>
+              <h4>Automatización sin gobernanza</h4>
+              <p>Herramientas implementadas sin controles, sin QA, sin dueño claro. Escala el caos, no el resultado.</p>
+            </div>
+            <div class="friccionCard">
+              <span class="icon">📊</span>
+              <h4>Dashboards que no deciden</h4>
+              <p>Métricas que generan reportes pero no responden: ¿estamos ganando? ¿dónde está el riesgo?</p>
+            </div>
+            <div class="friccionCard">
+              <span class="icon">🔀</span>
+              <h4>Equipos desalineados</h4>
+              <p>La estrategia existe en las presentaciones. En la operación diaria, cada área improvisa.</p>
+            </div>
+            <div class="friccionCard">
+              <span class="icon">🔄</span>
+              <h4>Sistemas fragmentados</h4>
+              <p>Múltiples herramientas haciendo lo mismo. Nadie sabe cuál es la fuente de verdad.</p>
+            </div>
+          </div>
+
+          <div class="pullquote">
+            La IA que no tiene sistema operativo detrás no es ventaja competitiva — es deuda técnica y organizacional.
+            <span>— Perspectiva Solaryn MX</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="hair"></div>
+
+      <!-- Ofertas -->
+      <section id="ofertas" class="section section-mx">
+        <div class="container">
+          <h2>Estructura de servicios</h2>
+          <p>Tres niveles de intervención. Elige el que corresponde a tu urgencia y profundidad de cambio requerida.</p>
+
+          <div class="offerGrid">
+            <div class="offerCard">
+              <h3>Diagnóstico AI</h3>
+              <p>Evaluación de alto nivel para identificar dónde la IA puede crear el mayor impacto con el menor riesgo operativo.</p>
+              <ul class="deliverables">
+                <li>Mapeo de flujos de trabajo actuales</li>
+                <li>Inventario de herramientas y brechas</li>
+                <li>Identificación de puntos de fricción</li>
+                <li>Reporte Ejecutivo de Madurez AI</li>
+              </ul>
+              <span class="pricing-tag">2–4 semanas · Oferta de entrada</span>
+            </div>
+
+            <div class="offerCard">
+              <h3>Sistema Operativo AI</h3>
+              <p>Rediseño completo del modelo operativo: flujos, herramientas, gobernanza y capa de métricas — alineados a tu estrategia.</p>
+              <ul class="deliverables">
+                <li>Rediseño de procesos core</li>
+                <li>Stack Airtable / Notion / automatización</li>
+                <li>Arquitectura de SOPs con IA</li>
+                <li>Playbook de implementación</li>
+              </ul>
+              <span class="pricing-tag">6–10 semanas · Build completo</span>
+            </div>
+
+            <div class="offerCard">
+              <h3>Continuum Ejecutivo</h3>
+              <p>Liderazgo embebido para mantener la cadencia, evolucionar los sistemas y preservar la ejecución limpia conforme escalan.</p>
+              <ul class="deliverables">
+                <li>Optimización mensual del sistema</li>
+                <li>Refinamiento de datos y KPIs</li>
+                <li>Advisory ejecutivo continuo</li>
+                <li>Marco de gobernanza AI</li>
+              </ul>
+              <span class="pricing-tag">Retainer mensual · Fraccionario</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 24px;">
+            <div class="cardTitle" style="font-size:13px; margin-bottom:10px; color:var(--muted);">Sectores con mayor fit</div>
+            <div class="sectorPills">
+              <span class="sectorPill">Inmobiliaria / Desarrolladoras</span>
+              <span class="sectorPill">Fintech &amp; Servicios Financieros</span>
+              <span class="sectorPill">Retail &amp; E-commerce</span>
+              <span class="sectorPill">CX &amp; Contact Center</span>
+              <span class="sectorPill">Manufactura &amp; Logística</span>
+              <span class="sectorPill">Educación Corporativa</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="hair"></div>
+
+      <!-- Metodología -->
+      <section id="metodologia" class="section section-mx">
+        <div class="container">
+          <h2>Metodología</h2>
+          <p>Colaborativa, rápida y construida sobre lo que tu equipo realmente hace hoy — no sobre lo que dice el organigrama.</p>
+
+          <div class="grid3">
+            <div class="card pad item">
+              <h3>01 — Mapear la realidad</h3>
+              <p>Observamos los flujos reales, decisiones, puntos de transferencia y puntos de falla — no lo que el org chart supone que existe.</p>
+            </div>
+            <div class="card pad item">
+              <h3>02 — Diseñar el sistema</h3>
+              <p>Definimos propiedad, controles y cadencia. Luego lo hacemos operable con templates, SOPs y habilitación del equipo.</p>
+            </div>
+            <div class="card pad item">
+              <h3>03 — Instrumentar e iterar</h3>
+              <p>Construimos la capa de métricas que hace visible la ejecución. Después ajustamos el loop hasta que sea repetible y escalable.</p>
+            </div>
+          </div>
+
+          <div class="metaLine" style="margin-top: 20px;">
+            Entregables típicos: roadmap 90 días · modelo operativo + RACI · blueprints de flujo · capa KPI/métricas · plan de habilitación
+          </div>
+        </div>
+      </section>
+
+      <div class="hair"></div>
+
+      <!-- Diagnóstico / Contact -->
+      <section id="diagnostico" class="section section-mx">
+        <div class="container">
+          <h2>Solicitar Diagnóstico Estratégico</h2>
+          <p>Para advisory, fraccionario o proyectos. Respuesta en 1–2 días hábiles. Sin listas de marketing.</p>
+
+          <div class="callout">
+            <div>
+              <div class="cardTitle">Comparte los detalles</div>
+              <p class="cardText">Cuéntanos qué estás escalando y dónde rompe la ejecución.</p>
+
+              <form action="https://formspree.io/f/mqedqzya" method="POST">
+                <label class="hiddenTrap">
+                  Deja este campo vacío:
+                  <input name="website" autocomplete="off" />
+                </label>
+
+                <!-- Hidden routing fields — ready for Airtable migration -->
+                <input type="hidden" name="_subject" value="Solaryn MX — Diagnóstico Estratégico" />
+                <input type="hidden" name="division" value="MX" />
+                <input type="hidden" name="form_source" value="mx.solarynadvisory.com" />
+
+                <div class="formGrid">
+                  <div class="field">
+                    <div class="label">Nombre</div>
+                    <input class="input" name="name" required />
+                  </div>
+                  <div class="field">
+                    <div class="label">Email</div>
+                    <input class="input" name="email" type="email" required />
+                  </div>
+                  <div class="field">
+                    <div class="label">Empresa</div>
+                    <input class="input" name="company" required />
+                  </div>
+                  <div class="field">
+                    <div class="label">Sector / Industria</div>
+                    <input class="input" name="industry" placeholder="Ej. Inmobiliaria, Fintech, Retail" />
+                  </div>
+                  <div class="field">
+                    <div class="label">Tamaño del equipo</div>
+                    <input class="input" name="team_size" placeholder="Ej. 20–50 personas" />
+                  </div>
+                  <div class="field">
+                    <div class="label">Timing</div>
+                    <input class="input" name="timing" placeholder="Ej. próximos 30–60 días" />
+                  </div>
+                </div>
+
+                <div class="field" style="margin-top:12px;">
+                  <div class="label">¿Qué estás escalando y dónde rompe la ejecución?</div>
+                  <textarea class="textarea" name="message" placeholder="Describe el contexto operativo, el reto principal y qué resultado buscas..." required></textarea>
+                </div>
+
+                <div class="formActions">
+                  <button class="btn" type="submit">Enviar diagnóstico</button>
+                  <div class="note">Sin listas de marketing. Tu nota llega directo a <b>nuestra bandeja de entrada</b>.</div>
+                </div>
+                <div class="mx-form-meta">Campos division, form_source e industry capturados para routing automático vía Airtable.</div>
+              </form>
+            </div>
+
+            <aside class="contactAside">
+              <div class="cardTitle">¿Prefieres escribir directamente?</div>
+              <a class="underline" href="mailto:hello@solarynadvisory.com">hello@solarynadvisory.com</a>
+
+              <div class="hrSpace"></div>
+
+              <div class="cardTitle">Template de introducción rápida</div>
+              <div class="templateBox" role="note" aria-label="Plantilla de email">
+                <div><b>Empresa</b>:</div>
+                <div><b>Industria / Sector</b>:</div>
+                <div><b>Qué estás escalando</b>:</div>
+                <div><b>Dónde rompe la ejecución</b>:</div>
+                <div><b>Resultado deseado</b>:</div>
+                <div><b>Timing</b>:</div>
+              </div>
+
+              <div class="metaLine" style="margin-top:12px;">
+                Si escribes por email, pega el template arriba — respondemos en 1–2 días hábiles.
+              </div>
+
+              <div class="hrSpace"></div>
+
+              <div class="card pad" style="background: rgba(0,200,120,.04); border-color: rgba(0,200,120,.15);">
+                <div class="cardTitle" style="font-size:13px;">Señales de fit para Solaryn MX</div>
+                <ul class="signalList" style="margin-top:8px; font-size:13px;">
+                  <li>Entrega cross-funcional sin sistema claro</li>
+                  <li>IA implementada sin gobernanza ni métricas</li>
+                  <li>"Necesitamos sistema, no más heroísmo"</li>
+                  <li>Escala activa con fricción operativa visible</li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer class="footer">
+        <div class="container">
+          <div class="row">
+            <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+              <span>© <span id="year"></span> Solaryn Advisory</span>
+              <span style="opacity:.3;">|</span>
+              <a href="https://solarynadvisory.com" style="color:var(--muted); font-size:13px;">Solaryn Advisory (EN) ↗</a>
+              <span style="opacity:.3;">|</span>
+              <span class="mx-flag"><span class="mx-dot"></span>División MX</span>
+            </div>
+            <div>Construye el sistema. Escala la organización.</div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
