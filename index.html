@@ -72,17 +72,7 @@
       /* Override nav last-child arrow — not appropriate for MX nav */
       .nav a:last-child::after { content: " →"; opacity: .6; }
 
-      .section-mx h2::before {
-        content: "";
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--green-accent);
-        margin-right: 10px;
-        vertical-align: middle;
-        opacity: .75;
-      }
+      .section-mx h2::before { content: none; }
 
       /* Offer stack */
       .offerGrid {
@@ -201,9 +191,8 @@
         border-radius: var(--radius);
         padding: 16px;
       }
-      .friccionCard .icon { font-size: 18px; margin-bottom: 8px; display: block; }
-      .friccionCard h4 { margin: 0 0 5px; font-size: 14px; font-weight: 600; }
-      .friccionCard p  { margin: 0; font-size: 13px; color: var(--muted); }
+      .friccionCard h4 { margin: 0 0 6px; font-size: 15px; font-weight: 600; }
+      .friccionCard p  { margin: 0; font-size: 15px; color: var(--muted); line-height: 1.5; }
 
       /* Sector pills */
       .sectorPills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
@@ -314,22 +303,18 @@
 
           <div class="friccionGrid">
             <div class="friccionCard">
-              <span class="icon">⚙️</span>
               <h4>Automatización sin gobernanza</h4>
               <p>Herramientas implementadas sin controles, sin QA, sin dueño claro. Escala el caos, no el resultado.</p>
             </div>
             <div class="friccionCard">
-              <span class="icon">📊</span>
               <h4>Dashboards que no deciden</h4>
               <p>Métricas que generan reportes pero no responden: ¿estamos ganando? ¿dónde está el riesgo?</p>
             </div>
             <div class="friccionCard">
-              <span class="icon">🔀</span>
               <h4>Equipos desalineados</h4>
               <p>La estrategia existe en las presentaciones. En la operación diaria, cada área improvisa.</p>
             </div>
             <div class="friccionCard">
-              <span class="icon">🔄</span>
               <h4>Sistemas fragmentados</h4>
               <p>Múltiples herramientas haciendo lo mismo. Nadie sabe cuál es la fuente de verdad.</p>
             </div>
